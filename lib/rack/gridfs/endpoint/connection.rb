@@ -1,4 +1,13 @@
-require 'timeout'
+if RUBY_VERSION < '1.9'
+  require 'system_timer'
+  module Rack
+    class GridFS
+      Timeout = SystemTimer
+    end
+  end
+else
+  require 'timeout'
+end
 
 module Rack
   class GridFS
