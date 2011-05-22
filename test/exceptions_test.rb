@@ -32,5 +32,14 @@ class ExceptionsTest < Test::Unit::TestCase
       get "/gridfs/test.txt"
       assert last_response.ok?
     end
+
+    should "raise GridFSConnectionError if unable to connect to MongoDB" do
+      Mongo::Connection.any_instance.stubs(:db).raises(Mongo::ConnectionFailure)
+
+      assert_raises Rack::GridFSConnectionError do
+        get "/gridfs/test.txt"
+        assert_equal 500, last_response.status
+      end
+    end
   end
 end
